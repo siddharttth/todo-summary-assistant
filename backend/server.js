@@ -106,8 +106,11 @@ app.post('/summarize', async (req, res) => {
     const groqResponse = await axios.post(
       'https://api.groq.com/openai/v1/chat/completions',
       {
-        model: 'meta-llama/llama-4-scout-17b-16e-instruct',
-        messages: [{ role: 'user', content: prompt }]
+        model: 'llama-3.3-70b-versatile',
+        messages: [{
+          role: 'user',
+          content: prompt
+        }]
       },
       {
         headers: {
@@ -117,17 +120,54 @@ app.post('/summarize', async (req, res) => {
       }
     );
 
+    if (!groqResponse.data.choices?.[0]?.message?.content) {
+      throw new Error('No response from Groq API');
+    }
+
     const summary = groqResponse.data.choices[0].message.content;
 
-    // Send to Slack
-    await axios.post(process.env.SLACK_WEBHOOK_URL, {
-      text: `📝 Todo Summary:\n*Pending:*\n${pendingList}\n\n*Completed:*\n${completedList}\n\n*AI Summary:*\n${summary}`
-    });
+    // Try to send to Slack
+    let slackStatus = 'failed';
+    try {
+      if (!process.env.SLACK_WEBHOOK_URL) {
+        throw new Error('Slack webhook URL is not configured');
+      }
 
-    res.json({ summary });
+      const slackMessage = {
+        text: `📝 Todo Summary:\n\n${summary}`
+      };
+
+      console.log('Attempting to send to Slack...');
+      const slackResponse = await axios.post(process.env.SLACK_WEBHOOK_URL, slackMessage);
+      console.log('Slack response:', slackResponse.status);
+      
+      if (slackResponse.status === 200) {
+        slackStatus = 'sent';
+        console.log('Successfully sent to Slack');
+      } else {
+        throw new Error(`Slack returned status ${slackResponse.status}`);
+      }
+    } catch (slackError) {
+      console.error('Failed to send to Slack:', {
+        message: slackError.message,
+        response: slackError.response?.data,
+        status: slackError.response?.status
+      });
+      slackStatus = 'failed';
+    }
+
+    // Return the summary and Slack status
+    res.json({ 
+      summary,
+      slackStatus
+    });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: error.message });
+    console.error('Error in summarize endpoint:', error);
+    console.error('Error details:', error.response?.data);
+    res.status(500).json({ 
+      error: error.message || 'Failed to generate summary',
+      details: error.response?.data || 'No additional details available'
+    });
   }
 });
 

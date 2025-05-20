@@ -1,4 +1,4 @@
-import { ChakraProvider, Container, VStack, Heading, Box, useColorMode, IconButton, Flex } from '@chakra-ui/react'
+import { ChakraProvider, Container, VStack, Heading, Box, useColorMode, IconButton, Flex, extendTheme } from '@chakra-ui/react'
 import TodoList from './components/TodoList'
 import AddTodoForm from './components/AddTodoForm'
 import SummaryButton from './components/SummaryButton'
@@ -7,6 +7,14 @@ import axios from 'axios'
 import { MoonIcon, SunIcon } from '@chakra-ui/icons'
 
 const API_URL = 'http://localhost:3001'
+
+// Configure theme
+const config = {
+  initialColorMode: 'light',
+  useSystemColorMode: false,
+}
+
+const theme = extendTheme({ config })
 
 function App() {
   const [todos, setTodos] = useState([])
@@ -56,11 +64,19 @@ function App() {
   const generateSummary = async () => {
     setLoading(true)
     try {
-      await axios.post(`${API_URL}/summarize`)
-      alert('Summary sent to Slack!')
+      const response = await axios.post(`${API_URL}/summarize`)
+      if (response.data.summary) {
+        if (response.data.slackStatus === 'sent') {
+          alert('Summary generated and sent to Slack successfully!')
+        } else {
+          alert('Summary generated successfully, but failed to send to Slack. Please check your Slack webhook configuration.')
+        }
+      } else {
+        throw new Error('No summary generated')
+      }
     } catch (error) {
       console.error('Error generating summary:', error)
-      alert('Error generating summary')
+      alert('Error generating summary: ' + (error.response?.data?.error || error.message))
     }
     setLoading(false)
   }
@@ -69,7 +85,7 @@ function App() {
   const completedTodos = todos.filter(todo => todo.completed)
 
   return (
-    <ChakraProvider>
+    <ChakraProvider theme={theme}>
       <Flex minH="100vh" direction="column" bg={colorMode === 'dark' ? 'gray.900' : 'gray.50'}>
         <Container maxW="md" flex="1" py={8}>
           <VStack spacing={6} align="stretch">

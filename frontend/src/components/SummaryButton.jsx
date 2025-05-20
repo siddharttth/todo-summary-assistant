@@ -1,26 +1,27 @@
-import { Button, Icon } from '@chakra-ui/react'
-import { FaSlack } from 'react-icons/fa'
+import { Button } from '@chakra-ui/react'
 
 function SummaryButton({ onClick, isLoading }) {
   return (
     <Button
       onClick={onClick}
       isLoading={isLoading}
-      loadingText="Sending to Slack..."
-      bg="#4A154B" // Slack purple
+      loadingText="GENERATING SUMMARY..."
+      bg="#333333"
       color="white"
       size="lg"
       width="100%"
       py={6}
-      borderRadius="lg"
-      leftIcon={<Icon as={FaSlack} boxSize={5} />}
-      boxShadow="md"
+      borderRadius="md"
+      boxShadow="none"
       fontWeight="medium"
-      _active={{ transform: "scale(0.98)" }}
-      _hover={{ bg: "#611f64", transform: "scale(1.02)" }}
+      letterSpacing="1px"
+      _hover={{ bg: "#444444" }}
+      _active={{ bg: "#222222" }}
       transition="all 0.2s"
+      textTransform="uppercase"
+      fontSize="sm"
     >
-      Send AI Summary to Slack
+      SEND SUMMARY TO SLACK
     </Button>
   )
 }

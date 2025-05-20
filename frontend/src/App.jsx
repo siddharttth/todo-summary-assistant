@@ -18,7 +18,8 @@ const theme = extendTheme({
   styles: {
     global: {
       body: {
-        bg: 'linear-gradient(to bottom right, #eef6ff, #f0e6ff)',
+        bg: "#0f0f0f", // Dark background matching portfolio
+        color: "#ffffff", // White text
       }
     }
   },
@@ -29,9 +30,13 @@ const theme = extendTheme({
           tab: {
             borderRadius: "full",
             fontWeight: "medium",
+            color: "gray.400",
             _selected: {
-              bg: "blue.50",
-              color: "blue.500",
+              bg: "#333333",
+              color: "#ffffff",
+            },
+            _hover: {
+              color: "#ffffff",
             }
           }
         }
@@ -125,28 +130,36 @@ function App() {
   return (
     <ChakraProvider theme={theme}>
       <Flex minH="100vh" direction="column" justifyContent="center" alignItems="center">
-        <Container maxW="md" py={12}>
+        <Container maxW="lg" py={12}>
           <VStack spacing={8} align="stretch">
-            <Box textAlign="center" mb={4}>
-              <Heading size="xl" color="blue.600" mb={2} fontWeight="bold">SlackMate</Heading>
-              <Text fontSize="md" color="gray.600">To-Do list that Streamlines your productivity</Text>
+            <Box textAlign="center" mb={6}>
+              <Heading 
+                as="h1" 
+                fontSize="6xl" 
+                fontWeight="bold" 
+                letterSpacing="-2px"
+                textTransform="uppercase"
+                mb={2}
+              >
+                TODO
+              </Heading>
+              <Text fontSize="md" color="gray.400" fontWeight="light" letterSpacing="1px">
+                ORGANIZATION MADE SIMPLE
+              </Text>
             </Box>
             
             <AddTodoForm onAdd={addTodo} />
             
             <Box 
-              bg="white" 
-              borderRadius="2xl" 
-              boxShadow="md" 
+              borderRadius="md" 
               p={6}
-              backdropFilter="blur(10px)"
-              backgroundColor="rgba(255, 255, 255, 0.7)"
+              bg="#171717"
               borderWidth="1px"
-              borderColor="white"
+              borderColor="#333333"
             >
-              <Heading size="md" mb={5} fontWeight="semibold">My Tasks</Heading>
+              <Heading size="md" mb={6} fontWeight="medium" letterSpacing="0.5px" color="gray.200">TASKS</Heading>
               
-              <Tabs variant="soft-rounded" colorScheme="blue" size="sm" isFitted>
+              <Tabs variant="soft-rounded" colorScheme="gray" size="sm" isFitted>
                 <TabList mb={6} justifyContent="center">
                   <Tab mx={1} py={1} px={4}>All</Tab>
                   <Tab mx={1} py={1} px={4}>Active</Tab>
@@ -163,8 +176,8 @@ function App() {
                       />
                     ) : (
                       <Box textAlign="center" py={12}>
-                        <Heading size="sm" color="gray.500">No tasks found</Heading>
-                        <Text fontSize="sm" color="gray.400" mt={2}>Add a task to get started!</Text>
+                        <Text color="gray.500">No tasks found</Text>
+                        <Text fontSize="sm" color="gray.600" mt={2}>Add a task to get started</Text>
                       </Box>
                     )}
                   </TabPanel>
@@ -178,8 +191,8 @@ function App() {
                       />
                     ) : (
                       <Box textAlign="center" py={12}>
-                        <Heading size="sm" color="gray.500">No active tasks</Heading>
-                        <Text fontSize="sm" color="gray.400" mt={2}>Add a task to get started!</Text>
+                        <Text color="gray.500">No active tasks</Text>
+                        <Text fontSize="sm" color="gray.600" mt={2}>Add a task to get started</Text>
                       </Box>
                     )}
                   </TabPanel>
@@ -196,18 +209,19 @@ function App() {
                           <Text 
                             as="button"
                             fontSize="sm"
-                            color="red.500"
+                            color="red.400"
                             onClick={clearCompleted}
-                            _hover={{ textDecoration: "underline" }}
+                            _hover={{ color: "red.300" }}
+                            letterSpacing="0.5px"
                           >
-                            Clear completed
+                            CLEAR COMPLETED
                           </Text>
                         </Flex>
                       </>
                     ) : (
                       <Box textAlign="center" py={12}>
-                        <Heading size="sm" color="gray.500">No completed tasks</Heading>
-                        <Text fontSize="sm" color="gray.400" mt={2}>Complete a task to see it here!</Text>
+                        <Text color="gray.500">No completed tasks</Text>
+                        <Text fontSize="sm" color="gray.600" mt={2}>Complete a task to see it here</Text>
                       </Box>
                     )}
                   </TabPanel>

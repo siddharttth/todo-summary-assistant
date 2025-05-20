@@ -1,7 +1,6 @@
 import { useState } from 'react'
-import { Input, Button, Flex, Box, Icon } from '@chakra-ui/react'
+import { Input, Button, Flex, Box } from '@chakra-ui/react'
 import { AddIcon } from '@chakra-ui/icons'
-import { FaRegCommentDots } from 'react-icons/fa'
 
 function AddTodoForm({ onAdd }) {
   const [title, setTitle] = useState('')
@@ -18,38 +17,43 @@ function AddTodoForm({ onAdd }) {
     <Box 
       as="form" 
       onSubmit={handleSubmit}
-      bg="rgba(255, 255, 255, 0.7)" 
-      borderRadius="xl" 
+      bg="#171717" 
+      borderRadius="md" 
       p={5} 
-      boxShadow="md"
-      backdropFilter="blur(10px)"
       borderWidth="1px"
-      borderColor="white"
+      borderColor="#333333"
     >
       <Flex alignItems="center">
-        <Icon as={FaRegCommentDots} color="purple.500" boxSize={5} mr={3} ml={1} />
         <Input
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           placeholder="Add a new task..."
           borderRadius="md"
           mr={3}
-          bg="white"
-          _focus={{ borderColor: "purple.400", boxShadow: "0 0 0 1px var(--chakra-colors-purple-400)" }}
+          bg="transparent"
+          _focus={{ borderColor: "gray.500", boxShadow: "none" }}
           border="1px solid"
-          borderColor="gray.100"
+          borderColor="#333333"
+          color="white"
+          _placeholder={{ color: "gray.500" }}
+          fontSize="sm"
         />
         <Button
           type="submit"
-          colorScheme="blue"
+          bg="#333333"
+          color="white"
           borderRadius="md"
           leftIcon={<AddIcon />}
           px={6}
           isDisabled={!title.trim()}
-          _hover={{ transform: "scale(1.05)" }}
-          transition="transform 0.2s"
+          _hover={{ bg: "#444444" }}
+          _active={{ bg: "#222222" }}
+          transition="all 0.2s"
+          fontWeight="medium"
+          letterSpacing="0.5px"
+          fontSize="sm"
         >
-          Add
+          ADD
         </Button>
       </Flex>
     </Box>

@@ -1,4 +1,4 @@
-import { VStack, HStack, Checkbox, Text, IconButton, Flex, Box } from '@chakra-ui/react'
+import { VStack, HStack, Checkbox, Text, IconButton, Flex } from '@chakra-ui/react'
 import { DeleteIcon } from '@chakra-ui/icons'
 
 function TodoList({ todos, onDelete, onToggleCompleted }) {
@@ -9,29 +9,29 @@ function TodoList({ todos, onDelete, onToggleCompleted }) {
       {todos.map((todo) => (
         <Flex 
           key={todo.id}
-          bg="rgba(255, 255, 255, 0.6)" 
-          backdropFilter="blur(10px)"
-          borderRadius="lg"
-          boxShadow="sm"
+          bg="#1a1a1a" 
+          borderRadius="md"
           borderWidth="1px"
-          borderColor="white"
+          borderColor="#333333"
           p={4}
-          transition="transform 0.2s"
-          _hover={{ transform: "translateX(4px)" }}
+          transition="all 0.2s"
+          _hover={{ borderColor: "#444444" }}
         >
           <Checkbox
             isChecked={todo.completed}
             onChange={(e) => onToggleCompleted(todo.id, e.target.checked)}
-            colorScheme="blue"
-            size="lg"
+            colorScheme="gray"
+            size="md"
             mr={3}
+            borderColor="#444444"
           />
           <Text 
             flex="1"
-            fontSize="md"
+            fontSize="sm"
             textDecoration={todo.completed ? 'line-through' : 'none'}
-            color={todo.completed ? 'gray.400' : 'inherit'}
+            color={todo.completed ? 'gray.500' : 'gray.200'}
             alignSelf="center"
+            letterSpacing="0.2px"
           >
             {todo.title}
           </Text>
@@ -41,8 +41,8 @@ function TodoList({ todos, onDelete, onToggleCompleted }) {
             aria-label="Delete task"
             variant="ghost"
             size="sm"
-            colorScheme="red"
-            ml={2}
+            color="gray.400"
+            _hover={{ color: "red.400", bg: "transparent" }}
           />
         </Flex>
       ))}

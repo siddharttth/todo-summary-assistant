@@ -21,7 +21,7 @@ A sleek, minimalist todo application with AI-powered summary generation and Slac
 
 1. Clone the repository
    ```
-   git clone https://github.com/yourusername/todo-summary-assistant.git
+   git clone https://github.com/siddharttth/todo-summary-assistant.git
    cd todo-summary-assistant
    ```
 

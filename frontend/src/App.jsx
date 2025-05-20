@@ -1,10 +1,9 @@
-import { ChakraProvider, Container, VStack, Heading, Box, useColorMode, IconButton, Flex, extendTheme } from '@chakra-ui/react'
+import { ChakraProvider, Container, VStack, Heading, Tab, Tabs, TabList, TabPanel, TabPanels, Box, Flex, Text, extendTheme } from '@chakra-ui/react'
 import TodoList from './components/TodoList'
 import AddTodoForm from './components/AddTodoForm'
 import SummaryButton from './components/SummaryButton'
 import { useState, useEffect } from 'react'
 import axios from 'axios'
-import { MoonIcon, SunIcon } from '@chakra-ui/icons'
 
 const API_URL = 'http://localhost:3001'
 
@@ -14,12 +13,41 @@ const config = {
   useSystemColorMode: false,
 }
 
-const theme = extendTheme({ config })
+const theme = extendTheme({ 
+  config,
+  styles: {
+    global: {
+      body: {
+        bg: 'linear-gradient(to bottom right, #eef6ff, #f0e6ff)',
+      }
+    }
+  },
+  components: {
+    Tabs: {
+      variants: {
+        "soft-rounded": {
+          tab: {
+            borderRadius: "full",
+            fontWeight: "medium",
+            _selected: {
+              bg: "blue.50",
+              color: "blue.500",
+            }
+          }
+        }
+      }
+    },
+    Button: {
+      baseStyle: {
+        _focus: { boxShadow: "none" }
+      }
+    }
+  }
+})
 
 function App() {
   const [todos, setTodos] = useState([])
   const [loading, setLoading] = useState(false)
-  const { colorMode, toggleColorMode } = useColorMode()
 
   useEffect(() => {
     fetchTodos()
@@ -61,6 +89,15 @@ function App() {
     }
   }
 
+  const clearCompleted = async () => {
+    try {
+      await axios.delete(`${API_URL}/todos/completed`)
+      fetchTodos()
+    } catch (error) {
+      console.error('Error clearing completed todos:', error)
+    }
+  }
+
   const generateSummary = async () => {
     setLoading(true)
     try {
@@ -81,38 +118,103 @@ function App() {
     setLoading(false)
   }
 
-  const pendingTodos = todos.filter(todo => !todo.completed)
+  const activeTodos = todos.filter(todo => !todo.completed)
   const completedTodos = todos.filter(todo => todo.completed)
-
+  const allTodos = [...todos]
+  
   return (
     <ChakraProvider theme={theme}>
-      <Flex minH="100vh" direction="column" bg={colorMode === 'dark' ? 'gray.900' : 'gray.50'}>
-        <Container maxW="md" flex="1" py={8}>
-          <VStack spacing={6} align="stretch">
-            <Flex justify="space-between" align="center">
-              <Heading size="lg">Todo Summary Assistant</Heading>
-              <IconButton
-                aria-label="Toggle color mode"
-                icon={colorMode === 'dark' ? <SunIcon /> : <MoonIcon />}
-                onClick={toggleColorMode}
-                variant="ghost"
-              />
-            </Flex>
-            <AddTodoForm onAdd={addTodo} />
-            <Box>
-              <TodoList
-                title="Pending"
-                todos={pendingTodos}
-                onDelete={deleteTodo}
-                onToggleCompleted={toggleCompleted}
-              />
-              <TodoList
-                title="Completed"
-                todos={completedTodos}
-                onDelete={deleteTodo}
-                onToggleCompleted={toggleCompleted}
-              />
+      <Flex minH="100vh" direction="column" justifyContent="center" alignItems="center">
+        <Container maxW="md" py={12}>
+          <VStack spacing={8} align="stretch">
+            <Box textAlign="center" mb={4}>
+              <Heading size="xl" color="blue.600" mb={2} fontWeight="bold">SlackMate</Heading>
+              <Text fontSize="md" color="gray.600">To-Do list that Streamlines your productivity</Text>
             </Box>
+            
+            <AddTodoForm onAdd={addTodo} />
+            
+            <Box 
+              bg="white" 
+              borderRadius="2xl" 
+              boxShadow="md" 
+              p={6}
+              backdropFilter="blur(10px)"
+              backgroundColor="rgba(255, 255, 255, 0.7)"
+              borderWidth="1px"
+              borderColor="white"
+            >
+              <Heading size="md" mb={5} fontWeight="semibold">My Tasks</Heading>
+              
+              <Tabs variant="soft-rounded" colorScheme="blue" size="sm" isFitted>
+                <TabList mb={6} justifyContent="center">
+                  <Tab mx={1} py={1} px={4}>All</Tab>
+                  <Tab mx={1} py={1} px={4}>Active</Tab>
+                  <Tab mx={1} py={1} px={4}>Completed</Tab>
+                </TabList>
+                
+                <TabPanels>
+                  <TabPanel p={0}>
+                    {allTodos.length > 0 ? (
+                      <TodoList 
+                        todos={allTodos} 
+                        onDelete={deleteTodo} 
+                        onToggleCompleted={toggleCompleted} 
+                      />
+                    ) : (
+                      <Box textAlign="center" py={12}>
+                        <Heading size="sm" color="gray.500">No tasks found</Heading>
+                        <Text fontSize="sm" color="gray.400" mt={2}>Add a task to get started!</Text>
+                      </Box>
+                    )}
+                  </TabPanel>
+                  
+                  <TabPanel p={0}>
+                    {activeTodos.length > 0 ? (
+                      <TodoList 
+                        todos={activeTodos} 
+                        onDelete={deleteTodo} 
+                        onToggleCompleted={toggleCompleted} 
+                      />
+                    ) : (
+                      <Box textAlign="center" py={12}>
+                        <Heading size="sm" color="gray.500">No active tasks</Heading>
+                        <Text fontSize="sm" color="gray.400" mt={2}>Add a task to get started!</Text>
+                      </Box>
+                    )}
+                  </TabPanel>
+                  
+                  <TabPanel p={0}>
+                    {completedTodos.length > 0 ? (
+                      <>
+                        <TodoList 
+                          todos={completedTodos} 
+                          onDelete={deleteTodo} 
+                          onToggleCompleted={toggleCompleted} 
+                        />
+                        <Flex justify="flex-end" mt={6}>
+                          <Text 
+                            as="button"
+                            fontSize="sm"
+                            color="red.500"
+                            onClick={clearCompleted}
+                            _hover={{ textDecoration: "underline" }}
+                          >
+                            Clear completed
+                          </Text>
+                        </Flex>
+                      </>
+                    ) : (
+                      <Box textAlign="center" py={12}>
+                        <Heading size="sm" color="gray.500">No completed tasks</Heading>
+                        <Text fontSize="sm" color="gray.400" mt={2}>Complete a task to see it here!</Text>
+                      </Box>
+                    )}
+                  </TabPanel>
+                </TabPanels>
+              </Tabs>
+            </Box>
+            
             <SummaryButton onClick={generateSummary} isLoading={loading} />
           </VStack>
         </Container>

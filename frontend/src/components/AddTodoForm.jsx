@@ -1,8 +1,7 @@
 import { useState } from 'react'
-import { Input, Button, HStack, Box } from '@chakra-ui/react'
-import { motion } from 'framer-motion'
-
-const MotionBox = motion(Box)
+import { Input, Button, Flex, Box, Icon } from '@chakra-ui/react'
+import { AddIcon } from '@chakra-ui/icons'
+import { FaRegCommentDots } from 'react-icons/fa'
 
 function AddTodoForm({ onAdd }) {
   const [title, setTitle] = useState('')
@@ -16,49 +15,44 @@ function AddTodoForm({ onAdd }) {
   }
 
   return (
-    <MotionBox
-      initial={{ opacity: 0, y: -20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}
-      as="form"
+    <Box 
+      as="form" 
       onSubmit={handleSubmit}
-      width="100%"
-      mb={6}
+      bg="rgba(255, 255, 255, 0.7)" 
+      borderRadius="xl" 
+      p={5} 
+      boxShadow="md"
+      backdropFilter="blur(10px)"
+      borderWidth="1px"
+      borderColor="white"
     >
-      <HStack
-        p={4}
-        bg="rgba(255, 255, 255, 0.8)"
-        borderRadius="xl"
-        boxShadow="0 4px 6px rgba(0, 0, 0, 0.1)"
-        backdropFilter="blur(10px)"
-        border="1px solid"
-        borderColor="rgba(0,0,0,0.1)"
-        spacing={3}
-      >
+      <Flex alignItems="center">
+        <Icon as={FaRegCommentDots} color="purple.500" boxSize={5} mr={3} ml={1} />
         <Input
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          placeholder="Add a new todo..."
-          size="lg"
-          variant="filled"
-          bg="rgba(255, 255, 255, 0.9)"
-          _hover={{ bg: 'rgba(255, 255, 255, 1)' }}
-          _focus={{ bg: 'rgba(255, 255, 255, 1)' }}
-          transition="all 0.3s ease"
+          placeholder="Add a new task..."
+          borderRadius="md"
+          mr={3}
+          bg="white"
+          _focus={{ borderColor: "purple.400", boxShadow: "0 0 0 1px var(--chakra-colors-purple-400)" }}
+          border="1px solid"
+          borderColor="gray.100"
         />
         <Button
           type="submit"
           colorScheme="blue"
-          size="lg"
-          px={8}
-          _hover={{ transform: 'scale(1.05)' }}
-          _active={{ transform: 'scale(0.95)' }}
-          transition="all 0.2s ease"
+          borderRadius="md"
+          leftIcon={<AddIcon />}
+          px={6}
+          isDisabled={!title.trim()}
+          _hover={{ transform: "scale(1.05)" }}
+          transition="transform 0.2s"
         >
           Add
         </Button>
-      </HStack>
-    </MotionBox>
+      </Flex>
+    </Box>
   )
 }
 

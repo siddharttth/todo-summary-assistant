@@ -101,32 +101,6 @@ A sleek, minimalist todo application with AI-powered summary generation and Slac
 9. Copy the Webhook URL provided
 10. Add it to your `.env` file as `SLACK_WEBHOOK_URL`
 
-## Deployment
-
-To deploy the application to a production environment:
-
-### Backend Deployment
-
-1. Ensure all environment variables are set in your production environment
-2. Build the backend:
-   ```
-   cd backend
-   npm install --production
-   ```
-3. Start the backend server:
-   ```
-   node server.js
-   ```
-
-### Frontend Deployment
-
-1. Build the frontend for production:
-   ```
-   cd frontend
-   npm run build
-   ```
-2. Deploy the contents of the `dist` folder to your web server or hosting service
-
 ## Troubleshooting
 
 - If you encounter CORS issues, ensure your backend allows requests from your frontend domain
